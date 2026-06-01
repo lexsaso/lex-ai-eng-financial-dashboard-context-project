@@ -11,14 +11,43 @@ import {
 import { computeKPIs, computeMonthlyData } from "@/lib/financial-utils";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "https://super-duper-dollop-jq475w4xpp5hqgr9-8000.app.github.dev";
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+
+const API_BASE_URL_CANDIDATES = Array.from(
+  new Set([API_BASE_URL, "http://localhost:8000", "http://127.0.0.1:8000"]),
+);
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 async function fetchFinancialData(): Promise<FinancialMovement[]> {
-  const response = await fetch(`${API_BASE_URL}/api/metrics`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch financial data: ${response.status}`);
+  let lastError: unknown = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    for (const baseUrl of API_BASE_URL_CANDIDATES) {
+      try {
+        const response = await fetch(`${baseUrl}/api/metrics`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch financial data: ${response.status}`);
+        }
+        return response.json();
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    if (attempt < 3) {
+      // Backend can still be starting up after compose starts the frontend.
+      await wait(500 * attempt);
+    }
   }
-  return response.json();
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Failed to fetch financial data");
 }
 
 function App() {
