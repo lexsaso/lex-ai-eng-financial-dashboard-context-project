@@ -46,6 +46,19 @@ docker compose up --build
 - Backend: http://localhost:8000
 - Documentación API: http://localhost:8000/docs
 
+El panel consulta `/api/metrics` en el mismo origen del frontend. Vite redirige
+`/api` a `http://127.0.0.1:8000` en local, o a `http://backend:8000` en Docker
+Compose mediante `API_PROXY_TARGET`. Compose no requiere un archivo de entorno.
+En Codespaces, abre el puerto reenviado 5173 del frontend, no la URL raiz del
+backend (que devuelve 404).
+
+Para una API desplegada por separado, configura `VITE_API_BASE_URL` con su origen
+(por ejemplo, `https://api.example.com`), sin `/api`, y permite el origen del
+frontend en el CORS del backend. Reinicia Vite si cambias variables de entorno.
+En produccion, el servidor de archivos estaticos debe redirigir `/api` al backend
+o usar ese origen explicito; el proxy de desarrollo de Vite no se incluye en el
+build.
+
 ---
 
 Este y muchos otros proyectos son construidos por estudiantes como parte de los [Coding Bootcamps](https://4geeksacademy.com/) de 4Geeks Academy. Encuentra más acerca de los [cursos](https://4geeksacademy.com/es/comparar-programas) de [Ingeniería de IA](https://4geeksacademy.com/es/coding-bootcamps/ingenieria-ia), [Data Science & Machine Learning](https://4geeksacademy.com/es/coding-bootcamps/curso-datascience-machine-learning), [Ciberseguridad](https://4geeksacademy.com/es/coding-bootcamps/curso-ciberseguridad) y [Full-Stack Software Developer con IA](https://4geeksacademy.com/es/coding-bootcamps/programador-full-stack).

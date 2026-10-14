@@ -46,6 +46,18 @@ docker compose up --build
 - Backend: http://localhost:8000
 - API documentation: http://localhost:8000/docs
 
+The dashboard requests `/api/metrics` from the frontend origin. Vite proxies
+`/api` to `http://127.0.0.1:8000` when running locally, or to
+`http://backend:8000` in Docker Compose via `API_PROXY_TARGET`. No environment
+file is required for Compose. In Codespaces, open the forwarded frontend port
+5173, not the backend root URL (which returns 404).
+
+For a separate API deployment, set `VITE_API_BASE_URL` to its origin (for example,
+`https://api.example.com`), without `/api`, and configure backend CORS for the
+frontend origin. Restart Vite after changing environment variables. A production
+static host must proxy `/api` to the backend or use this explicit API origin;
+the Vite development proxy is not included in the build.
+
 ---
 
 This and many other projects are built by students as part of the [Career Programs](https://4geeksacademy.com/compare-programs) at [4Geeks Academy](https://4geeksacademy.com). By [@marcogonzalo](https://github.com/marcogonzalo) and [other contributors](https://github.com/4GeeksAcademy/ai-eng-financial-dashboard-context-project/graphs/contributors). Find out more about [AI Engineering](https://4geeksacademy.com/en/coding-bootcamps/ai-engineering), [Data Science & Machine Learning](https://4geeksacademy.com/en/coding-bootcamps/data-science-ml), [Cybersecurity](https://4geeksacademy.com/en/coding-bootcamps/cybersecurity) and [Full-Stack Software Developer with AI](https://4geeksacademy.com/en/coding-bootcamps/full-stack-developer).
