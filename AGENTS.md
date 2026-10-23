@@ -7,6 +7,8 @@ Agents working on this project **must**:
 
 - Look for available **agent skills** in the directory:  
   `./.agents/skills`
+- Also review project workflow skills in:
+  `./.skills/<skill-name>/SKILL.md`
 
 - Look for the **project memory bank** in:  
   `./memory-bank`  

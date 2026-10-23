@@ -73,31 +73,52 @@ function App() {
   }, []);
 
   return (
-    <main className="dark min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-8">
-          <DashboardHeader period="2024 - Full Year" />
+    <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+      <p className="sr-only" role="status">
+        {loading
+          ? "Loading financial data."
+          : error
+            ? ""
+            : "Financial data loaded."}
+      </p>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        aria-busy={loading}
+        className="dark min-h-screen bg-background text-foreground"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-8">
+            <DashboardHeader period="2024 - Full Year" />
 
-          {error ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground">
-              {error}
-            </div>
-          ) : null}
+            {error ? (
+              <div
+                role="alert"
+                lang="es"
+                className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive-foreground"
+              >
+                {error}
+              </div>
+            ) : null}
 
-          <section aria-label="Key performance indicators">
-            <KPIRow metrics={metrics} loading={loading} />
-          </section>
+            <section aria-label="Key performance indicators">
+              <KPIRow metrics={metrics} loading={loading} />
+            </section>
 
-          <section
-            aria-label="Financial charts"
-            className="grid grid-cols-1 gap-4 xl:grid-cols-2"
-          >
-            <IncomeOutcomeChart data={monthlyData} loading={loading} />
-            <ProfitPercentChart data={monthlyData} loading={loading} />
-          </section>
+            <section
+              aria-label="Financial charts"
+              className="grid grid-cols-1 gap-4 xl:grid-cols-2"
+            >
+              <IncomeOutcomeChart data={monthlyData} loading={loading} />
+              <ProfitPercentChart data={monthlyData} loading={loading} />
+            </section>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
 
